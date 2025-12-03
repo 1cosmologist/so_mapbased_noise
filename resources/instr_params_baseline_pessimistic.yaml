@@ -1,0 +1,49 @@
+# Simons Observatory instrument parameters
+
+LF027:
+  central_freq_GHz: 27.
+  beam_fwhm_arcmin: 91.
+  noise_uK_arcmin: 16.
+  ell_knee: 30
+  alpha_knee: -2.4
+  nside: 512
+
+LF039:
+  central_freq_GHz: 39.
+  beam_fwhm_arcmin: 63.
+  noise_uK_arcmin: 10.
+  ell_knee: 30
+  alpha_knee: -2.4
+  nside: 512
+
+MF093:
+  central_freq_GHz: 93.
+  beam_fwhm_arcmin: 30.
+  noise_uK_arcmin: 1.7
+  ell_knee: 50
+  alpha_knee: -2.5
+  nside: 512
+
+MF145:
+  central_freq_GHz: 145.
+  beam_fwhm_arcmin: 17.
+  noise_uK_arcmin: 2.1
+  ell_knee: 50
+  alpha_knee: -3.
+  nside: 512
+
+HF225:
+  central_freq_GHz: 225.
+  beam_fwhm_arcmin: 11.
+  noise_uK_arcmin: 5.9
+  ell_knee: 70
+  alpha_knee: -3.
+  nside: 512
+
+HF280:
+  central_freq_GHz: 280.
+  beam_fwhm_arcmin: 9.
+  noise_uK_arcmin: 15.
+  ell_knee: 100
+  alpha_knee: -3.
+  nside: 512
