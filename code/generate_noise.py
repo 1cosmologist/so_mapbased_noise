@@ -17,7 +17,10 @@ DEFAULT_PARAMS = {
 so_channels = list(DEFAULT_PARAMS.keys())
 
 nfreqs_tot = 25 #len(so_channels)  # Budget for 25 frequency channels
-child_seeds = ss.spawn(nfreqs_tot)
+# Generate deterministic integer seeds from the SeedSequence for each channel
+# This ensures reproducibility and avoids SeedSequence state consumption issues
+_child_ss = ss.spawn(nfreqs_tot)
+child_seeds = [cs.generate_state(1)[0] for cs in _child_ss]
 
 sohits_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_relhits_C_nside512.fits'
 sofoot_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_full-binary_C_nside512.fits'
@@ -72,7 +75,7 @@ class SimonsObservatoryNoise:
         self.so_foot = hp.read_map(sofoot_file)
 
         self.hits_scaling = np.zeros(so_hits.shape)
-        self.hits_scaling[so_hits>=1e-2] = 1. - np.sqrt(so_hits[so_hits>=1e-2])
+        self.hits_scaling[so_hits>=1e-2] = 1. / np.sqrt(so_hits[so_hits>=1e-2])
 
         stream_idx = so_channels.index(channel)
         self.rng = np.random.default_rng(child_seeds[stream_idx])
@@ -87,6 +90,6 @@ class SimonsObservatoryNoise:
         nlm_TEB[1] = hp.almxfl(nlm_TEB[1], np.sqrt(self.Nl))
         nlm_TEB[2] = hp.almxfl(nlm_TEB[2], np.sqrt(self.Nl))
 
-        noise_IQU = hp.alm2map(nlm_TEB, self.nside, pol=True) * self.hits_scaling * self.so_foot
+        noise_IQU = hp.alm2map(nlm_TEB, self.nside, pol=True) * self.so_foot * self.hits_scaling 
 
         return noise_IQU

@@ -11,7 +11,8 @@ from tqdm import tqdm
 from generate_noise import SimonsObservatoryNoise
 
 # Configuration
-NSIMS = 100
+NSIMS = 5
+NSPLITS = None
 YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_baseline_pessimistic.yaml'
 BASE_OUTPUT_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/output'
 
@@ -51,27 +52,52 @@ def main():
 
         for sim_idx in tqdm(range(NSIMS), desc=f"  {ch_name}", ncols=120):
             # Generate noise realization
-            noise_map = noise_gen.get_noise()
-            
-            header = [
-                ('UNITS', 'uK_CMB', 'Map units'),
-                ('CHANNEL', noise_gen.channel, 'Channel name'),
-                ('FREQ', noise_gen.freq, 'Frequency in GHz'),
-                ('NOISE', noise_gen.uKarcmin, 'noise level in uK-arcmin'),
-                ('ELLKNEE', noise_gen.ell_knee, 'Knee multipole'),
-                ('ALPHA', noise_gen.alpha, 'Knee slope'),
-                ('SIMIDX', sim_idx, 'Simulation index'),
-            ]
+            if NSPLITS is None:
+                noise_map = noise_gen.get_noise()
+                
+                header = [
+                    ('UNITS', 'uK_CMB', 'Map units'),
+                    ('CHANNEL', noise_gen.channel, 'Channel name'),
+                    ('FREQ', noise_gen.freq, 'Frequency in GHz'),
+                    ('NOISE', noise_gen.uKarcmin, 'noise level in uK-arcmin'),
+                    ('ELLKNEE', noise_gen.ell_knee, 'Knee multipole'),
+                    ('ALPHA', noise_gen.alpha, 'Knee slope'),
+                    ('SIMIDX', sim_idx, 'Simulation index'),
+                ]
 
-            # Create output filename
-            outfile = os.path.join(
-                output_folder,
-                f"sobs_noise_{ch_name}_mc{sim_idx:03d}_nside{nside:04d}.fits"
-            )
+                # Create output filename
+                outfile = os.path.join(
+                    output_folder,
+                    f"sobs_noise_{ch_name}_mc{sim_idx:03d}_nside{nside:04d}.fits"
+                )
 
-            # Save to FITS
-            hp.write_map(outfile, noise_map, extra_header=header, overwrite=True, dtype=np.float32)
+                # Save to FITS
+                hp.write_map(outfile, noise_map, extra_header=header, overwrite=True, dtype=np.float32)
+            else: 
+                for split in range(NSPLITS):
+                    noise_map = noise_gen.get_noise() * NSPLITS
+                
+                    header = [
+                        ('UNITS', 'uK_CMB', 'Map units'),
+                        ('CHANNEL', noise_gen.channel, 'Channel name'),
+                        ('FREQ', noise_gen.freq, 'Frequency in GHz'),
+                        ('NOISE', noise_gen.uKarcmin, 'noise level in uK-arcmin'),
+                        ('ELLKNEE', noise_gen.ell_knee, 'Knee multipole'),
+                        ('ALPHA', noise_gen.alpha, 'Knee slope'),
+                        ('SIMIDX', sim_idx, 'Simulation index'),
+                        ('SPLIT', split, 'Split index'),
+                    ]
 
+                    # Create output filename
+                    outfile = os.path.join(
+                        output_folder,
+                        f"sobs_noise_{ch_name}_mc{sim_idx:03d}_split{split:02d}_nside{nside:04d}.fits"
+                    )
+
+                    # Save to FITS
+                    hp.write_map(outfile, noise_map, extra_header=header, overwrite=True, dtype=np.float32)
+        del noise_gen  # Free memory
+        
     print(f"\nDone! All noise maps saved to {output_folder}")
 
 
