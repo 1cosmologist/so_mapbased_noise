@@ -10,6 +10,7 @@ import healpy as hp
 import matplotlib.pyplot as plt
 import cmocean
 import skytools as st
+import pymaster as nmt
 from tqdm import tqdm
 
 # Configuration
@@ -18,6 +19,7 @@ YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_bas
 BASE_OUTPUT_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/output'
 RELHITS_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_relhits_C_nside512.fits'
 FULL_BINARY_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_full-binary_C_nside512.fits'
+# RELHITS_FILE = FULL_BINARY_FILE  # Use binary mask for weighting in this validation
 LMAX = 1000
 
 
@@ -66,9 +68,11 @@ def main():
     # Create weight map (zero where hits are too low)
     weight = np.zeros_like(relhits)
     weight[relhits >= 1e-2] = relhits[relhits >= 1e-2]
+    
     fsky = st.fsky(weight)
     
     binary_mask = hp.read_map(FULL_BINARY_FILE)
+    mask_apo = nmt.mask_apodization(binary_mask, 3., apotype='C2')
     fsky_binary = st.fsky(binary_mask)
     
     print(f"Effective f_sky after weighting: {fsky:.4f}")
@@ -128,14 +132,24 @@ def main():
         print(f"  Computing average power spectrum over {NSIMS_FOR_AVG} realizations...")
         
         # Initialize arrays for accumulating spectra (TT, EE, BB, TE, EB, TB)
+
+        bins = nmt.NmtBin.from_lmax_linear(LMAX, 15)
+        leff = bins.get_effective_ells()
+        nmt_wsp = nmt.NmtWorkspace()
+        
         cl_sum_TT = np.zeros(LMAX + 1)
         cl_sum_EE = np.zeros(LMAX + 1)
         cl_sum_BB = np.zeros(LMAX + 1)
         
-        cl_h_sum_TT = np.zeros(LMAX + 1)
-        cl_h_sum_EE = np.zeros(LMAX + 1)
-        cl_h_sum_BB = np.zeros(LMAX + 1)
+        # cl_h_sum_TT = np.zeros(LMAX + 1)
+        # cl_h_sum_EE = np.zeros(LMAX + 1)
+        # cl_h_sum_BB = np.zeros(LMAX + 1)
         
+        cl_h_sum_TT = np.zeros(len(leff))
+        cl_h_sum_EE = np.zeros(len(leff))
+        cl_h_sum_BB = np.zeros(len(leff))
+
+
         for sim_idx in tqdm(range(NSIMS_FOR_AVG), desc=f"  {ch_name} spectra", ncols=120):
             noise_file = os.path.join(
                 noise_folder,
@@ -150,16 +164,25 @@ def main():
             cls = hp.anafast(weighted_map, lmax=LMAX, pol=True, nspec=3) / fsky
             
             homo_noise_map = noise_map * np.sqrt(weight)
-            cls_h = hp.anafast(homo_noise_map, lmax=LMAX, pol=True, nspec=3) / fsky_binary
+            
+            if sim_idx == 0:
+                field = nmt.NmtField(mask_apo, [homo_noise_map[0]], purify_e=False, purify_b=False, lmax=LMAX, lmax_mask=LMAX)
+                nmt_wsp.compute_coupling_matrix(field, field, bins)
+                
+            cls_h = hp.anafast(homo_noise_map * mask_apo, lmax=LMAX, pol=True, nspec=3) #/ fsky_binary
+            
+            cls_h_binned = np.zeros((3, len(leff)))
+            for i in range(3):
+                cls_h_binned[i] = nmt_wsp.decouple_cell(cls_h[i].reshape(1, -1))[0]
             # cls returns: TT, EE, BB
             
             cl_sum_TT += cls[0]
             cl_sum_EE += cls[1]
             cl_sum_BB += cls[2]
             
-            cl_h_sum_TT += cls_h[0]
-            cl_h_sum_EE += cls_h[1]
-            cl_h_sum_BB += cls_h[2]
+            cl_h_sum_TT += cls_h_binned[0]
+            cl_h_sum_EE += cls_h_binned[1]
+            cl_h_sum_BB += cls_h_binned[2]
         
         # Average spectra
         cl_avg_TT = cl_sum_TT / NSIMS_FOR_AVG
@@ -191,9 +214,9 @@ def main():
         
         # TT spectrum
         ax = axes[0]
-        ax.semilogy(ells[2:], cl_avg_TT[2:], '-', label='Measured (hits weighted)', alpha=0.8)
-        ax.semilogy(ells[2:], cl_h_avg_TT[2:], '--', label='Measured (homogenized)', alpha=0.8)
-        ax.semilogy(ells_theory[2:], Nl_theory_T[2:], '-', label='Theory', alpha=0.7)
+        ax.loglog(ells[2:], cl_avg_TT[2:], '-', label='Measured (hits weighted)', alpha=0.8)
+        ax.loglog(leff, cl_h_avg_TT, 'o', label='Measured (homogenized)', alpha=0.8)
+        ax.loglog(ells_theory[2:], Nl_theory_T[2:], '-', label='Theory', alpha=0.7)
         ax.set_xlabel(r'$\ell$')
         ax.set_ylabel(r'$C_\ell^{TT}$ [$\mu K^2$]')
         ax.set_title(f'{ch_name} - TT Power Spectrum')
@@ -203,9 +226,9 @@ def main():
         
         # EE spectrum
         ax = axes[1]
-        ax.semilogy(ells[2:], cl_avg_EE[2:], '-', label='Measured (hits weighted)', alpha=0.8)
-        ax.semilogy(ells[2:], cl_h_avg_EE[2:], '--', label='Measured (homogenized)', alpha=0.8)
-        ax.semilogy(ells_theory[2:], Nl_theory_P[2:], '-', label='Theory', alpha=0.7)
+        ax.loglog(ells[2:], cl_avg_EE[2:], '-', label='Measured (hits weighted)', alpha=0.8)
+        ax.loglog(leff, cl_h_avg_EE, 'o', label='Measured (homogenized)', alpha=0.8)
+        ax.loglog(ells_theory[2:], Nl_theory_P[2:], '-', label='Theory', alpha=0.7)
         ax.set_xlabel(r'$\ell$')
         ax.set_ylabel(r'$C_\ell^{EE}$ [$\mu K^2$]')
         ax.set_title(f'{ch_name} - EE Power Spectrum')
@@ -215,9 +238,9 @@ def main():
         
         # BB spectrum
         ax = axes[2]
-        ax.semilogy(ells[2:], cl_avg_BB[2:], '-', label='Measured (hits weighted)', alpha=0.8)
-        ax.semilogy(ells[2:], cl_h_avg_BB[2:], '--', label='Measured (homogenized)', alpha=0.8)
-        ax.semilogy(ells_theory[2:], Nl_theory_P[2:], '-', label='Theory', alpha=0.7)
+        ax.loglog(ells[2:], cl_avg_BB[2:], '-', label='Measured (hits weighted)', alpha=0.8)
+        ax.loglog(leff, cl_h_avg_BB, 'o', label='Measured (homogenized)', alpha=0.8)
+        ax.loglog(ells_theory[2:], Nl_theory_P[2:], '-', label='Theory', alpha=0.7)
         ax.set_xlabel(r'$\ell$')
         ax.set_ylabel(r'$C_\ell^{BB}$ [$\mu K^2$]')
         ax.set_title(f'{ch_name} - BB Power Spectrum')

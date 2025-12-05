@@ -89,6 +89,7 @@ class SimonsObservatoryNoise:
         nlm_TEB[0] = hp.almxfl(nlm_TEB[0], np.sqrt(self.Nl)) / np.sqrt(2)
         nlm_TEB[1] = hp.almxfl(nlm_TEB[1], np.sqrt(self.Nl))
         nlm_TEB[2] = hp.almxfl(nlm_TEB[2], np.sqrt(self.Nl))
+        # nlm_TEB = hp.synalm([self.Nl, self.Nl, self.Nl, np.zeros_like(self.Nl)], lmax=self.lmax, new=True)
 
         noise_IQU = hp.alm2map(nlm_TEB, self.nside, pol=True) * self.so_foot * self.hits_scaling 
 
