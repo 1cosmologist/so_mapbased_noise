@@ -12,6 +12,7 @@ DEFAULT_PARAMS = {
     'MF145': {'central_freq_GHz': 145., 'beam_fwhm_arcmin': 17., 'noise_uK_arcmin': 2.1, 'ell_knee': 50, 'alpha_knee': -3., 'nside': 512},
     'HF225': {'central_freq_GHz': 225., 'beam_fwhm_arcmin': 11., 'noise_uK_arcmin': 5.9, 'ell_knee': 70, 'alpha_knee': -3., 'nside': 512},
     'HF280': {'central_freq_GHz': 280., 'beam_fwhm_arcmin': 9., 'noise_uK_arcmin': 15., 'ell_knee': 100, 'alpha_knee': -3., 'nside': 512},
+    'HF346': {'central_freq_GHz': 346., 'beam_fwhm_arcmin': 8., 'noise_uK_arcmin': 109., 'ell_knee': 200, 'alpha_knee': -3., 'nside': 512},
 }
 
 so_channels = list(DEFAULT_PARAMS.keys())

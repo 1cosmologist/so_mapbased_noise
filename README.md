@@ -90,6 +90,16 @@ This recovers a map with uniform noise properties, which simplifies the interpre
 | HF225   | 225             | 11                 | 5.9                | 70     | -3.0   |
 | HF280   | 280             | 9                  | 15.0               | 100    | -3.0   |
 
+### Configuration for HF346 
+Calculation and validation in `so_350_depthmap.ipynb`.
+
+- Frequency: 346 GHz
+- Beam FWHM: 8 arcmin
+- noise: 109 μK-arcmin
+- ℓ_knee: 200
+- α_knee: -3.0
+
+
 ## Usage
 
 ### Generating Noise Maps

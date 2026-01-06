@@ -13,7 +13,7 @@ from generate_noise import SimonsObservatoryNoise
 # Configuration
 NSIMS = 100
 NSPLITS = None
-YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_baseline_pessimistic.yaml'
+YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_baselineEHF_pessimistic.yaml'
 BASE_OUTPUT_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/output'
 
 
