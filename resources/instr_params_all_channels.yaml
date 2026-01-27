@@ -1,0 +1,137 @@
+# Simons Observatory instrument parameters for variance_map noise generation
+# All unique channel configurations across different telescope schedules
+
+# LF 27 GHz
+LF027_2.00telyrs_lk30:
+  central_freq_GHz: 27.
+  beam_fwhm_arcmin: 91.
+  ell_knee: 30
+  alpha_knee: -2.4
+  nside: 512
+  tel_yrs: 2.00
+
+LF027_8.50telyrs_lk30:
+  central_freq_GHz: 27.
+  beam_fwhm_arcmin: 91.
+  ell_knee: 30
+  alpha_knee: -2.4
+  nside: 512
+  tel_yrs: 8.50
+
+# LF 39 GHz
+LF039_2.00telyrs_lk30:
+  central_freq_GHz: 39.
+  beam_fwhm_arcmin: 63.
+  ell_knee: 30
+  alpha_knee: -2.4
+  nside: 512
+  tel_yrs: 2.00
+
+LF039_8.50telyrs_lk30:
+  central_freq_GHz: 39.
+  beam_fwhm_arcmin: 63.
+  ell_knee: 30
+  alpha_knee: -2.4
+  nside: 512
+  tel_yrs: 8.50
+
+# MF 93 GHz
+MF093_20.66telyrs_lk50:
+  central_freq_GHz: 93.
+  beam_fwhm_arcmin: 30.
+  ell_knee: 50
+  alpha_knee: -2.5
+  nside: 512
+  tel_yrs: 20.66
+
+MF093_36.66telyrs_lk50:
+  central_freq_GHz: 93.
+  beam_fwhm_arcmin: 30.
+  ell_knee: 50
+  alpha_knee: -2.5
+  nside: 512
+  tel_yrs: 36.66
+
+# MF 145 GHz
+MF145_20.66telyrs_lk50:
+  central_freq_GHz: 145.
+  beam_fwhm_arcmin: 17.
+  ell_knee: 50
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 20.66
+
+MF145_36.66telyrs_lk50:
+  central_freq_GHz: 145.
+  beam_fwhm_arcmin: 17.
+  ell_knee: 50
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 36.66
+
+# HF 225 GHz
+HF225_10.00telyrs_lk70:
+  central_freq_GHz: 225.
+  beam_fwhm_arcmin: 11.
+  ell_knee: 70
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 10.00
+
+HF225_17.00telyrs_lk70:
+  central_freq_GHz: 225.
+  beam_fwhm_arcmin: 11.
+  ell_knee: 70
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 17.00
+
+# HF 280 GHz
+HF280_10.00telyrs_lk100:
+  central_freq_GHz: 280.
+  beam_fwhm_arcmin: 9.
+  ell_knee: 100
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 10.00
+
+HF280_17.00telyrs_lk100:
+  central_freq_GHz: 280.
+  beam_fwhm_arcmin: 9.
+  ell_knee: 100
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 17.00
+
+# HF 346 GHz
+HF346_7.00telyrs_lk50:
+  central_freq_GHz: 346.
+  beam_fwhm_arcmin: 8.
+  ell_knee: 50
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 7.00
+
+HF346_14.00telyrs_lk50:
+  central_freq_GHz: 346.
+  beam_fwhm_arcmin: 8.
+  ell_knee: 50
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 14.00
+
+HF346_7.00telyrs_lk200:
+  central_freq_GHz: 346.
+  beam_fwhm_arcmin: 8.
+  ell_knee: 200
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 7.00
+
+HF346_14.00telyrs_lk200:
+  central_freq_GHz: 346.
+  beam_fwhm_arcmin: 8.
+  ell_knee: 200
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 14.00

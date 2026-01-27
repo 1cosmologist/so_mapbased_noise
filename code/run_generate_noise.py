@@ -11,10 +11,18 @@ from tqdm import tqdm
 from generate_noise import SimonsObservatoryNoise
 
 # Configuration
-NSIMS = 100
+NSIMS = 50
 NSPLITS = None
-YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_baselineEHF_pessimistic.yaml'
+YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_all_channels.yaml'
 BASE_OUTPUT_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/output'
+
+# Noise generation method: 'harmonic' or 'variance_map'
+NOISE_METHOD = 'variance_map'
+
+# Directory containing variance maps (used if NOISE_METHOD='variance_map')
+VARIANCE_MAP_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/variance_maps'
+sohits_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_relhits_C_nside512.fits'
+sofoot_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_full-binary_C_nside512.fits'
 
 
 def get_output_folder(yaml_path, base_output_dir):
@@ -36,18 +44,37 @@ def main():
     
     channels = list(params.keys())
     print(f"Found {len(channels)} channels: {channels}")
+    print(f"Noise generation method: {NOISE_METHOD}")
+    if NOISE_METHOD == 'variance_map':
+        print(f"Variance map directory: {VARIANCE_MAP_DIR}")
 
     # Create output folder
     output_folder = get_output_folder(YAML_FILE, BASE_OUTPUT_DIR)
     os.makedirs(output_folder, exist_ok=True)
     print(f"Output folder: {output_folder}")
 
+    # Load hits and footprint maps for harmonic method
+    so_hits = None
+    so_foot = None
+    if NOISE_METHOD == 'harmonic':
+        print(f"Loading hits map: {sohits_file}")
+        so_hits = hp.read_map(sohits_file)
+        print(f"Loading footprint map: {sofoot_file}")
+        so_foot = hp.read_map(sofoot_file)
+
     # Generate noise for each channel
     for ch_name in channels:
         print(f"\nProcessing channel: {ch_name}")
         
         # Initialize noise generator for this channel
-        noise_gen = SimonsObservatoryNoise(ch_name, params=YAML_FILE)
+        noise_gen = SimonsObservatoryNoise(
+            ch_name, 
+            params=YAML_FILE,
+            noise_method=NOISE_METHOD,
+            so_hits=so_hits,
+            so_foot=so_foot,
+            variance_map_dir=VARIANCE_MAP_DIR
+        )
         nside = noise_gen.nside
 
         for sim_idx in tqdm(range(NSIMS), desc=f"  {ch_name}", ncols=120):
@@ -59,11 +86,19 @@ def main():
                     ('UNITS', 'uK_CMB', 'Map units'),
                     ('CHANNEL', noise_gen.channel, 'Channel name'),
                     ('FREQ', noise_gen.freq, 'Frequency in GHz'),
-                    ('NOISE', noise_gen.uKarcmin, 'noise level in uK-arcmin'),
                     ('ELLKNEE', noise_gen.ell_knee, 'Knee multipole'),
                     ('ALPHA', noise_gen.alpha, 'Knee slope'),
                     ('SIMIDX', sim_idx, 'Simulation index'),
+                    ('NMETHOD', noise_gen.noise_method, 'Noise generation method'),
                 ]
+                
+                # Add noise level if using harmonic method
+                if noise_gen.noise_method == 'harmonic':
+                    header.append(('NOISE', noise_gen.uKarcmin, 'noise level in uK-arcmin'))
+                
+                # Add telescope-years if using variance_map method
+                if noise_gen.noise_method == 'variance_map' and noise_gen.tel_yrs is not None:
+                    header.append(('TEL_YRS', noise_gen.tel_yrs, 'Telescope-years'))
 
                 # Create output filename
                 outfile = os.path.join(
@@ -81,12 +116,20 @@ def main():
                         ('UNITS', 'uK_CMB', 'Map units'),
                         ('CHANNEL', noise_gen.channel, 'Channel name'),
                         ('FREQ', noise_gen.freq, 'Frequency in GHz'),
-                        ('NOISE', noise_gen.uKarcmin, 'noise level in uK-arcmin'),
                         ('ELLKNEE', noise_gen.ell_knee, 'Knee multipole'),
                         ('ALPHA', noise_gen.alpha, 'Knee slope'),
                         ('SIMIDX', sim_idx, 'Simulation index'),
                         ('SPLIT', split, 'Split index'),
+                        ('NMETHOD', noise_gen.noise_method, 'Noise generation method'),
                     ]
+                    
+                    # Add noise level if using harmonic method
+                    if noise_gen.noise_method == 'harmonic':
+                        header.append(('NOISE', noise_gen.uKarcmin, 'noise level in uK-arcmin'))
+                    
+                    # Add telescope-years if using variance_map method
+                    if noise_gen.noise_method == 'variance_map' and noise_gen.tel_yrs is not None:
+                        header.append(('TEL_YRS', noise_gen.tel_yrs, 'Telescope-years'))
 
                     # Create output filename
                     outfile = os.path.join(
