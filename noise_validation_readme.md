@@ -136,7 +136,7 @@ Four BB power spectrum estimates are computed for each channel, averaged over 50
    - `homo_map = noise_map × sqrt(weight_south)`
    - Then apply apodized binary mask for power spectrum
 
-The **homogenization** idea: multiplying by `sqrt(relhits)` converts the spatially-varying noise to approximately uniform noise level across the patch, making the power spectrum interpretation simpler.
+The **homogenization** idea: multiplying by `sqrt(relhits)` converts the spatially-varying noise to approximately uniform noise level across the patch, making the power spectrum interpretation simpler. Note: we are using the relative hits from MF093. This is not identical to UHF hit maps. This slight difference means using the MF093 relative hits would not homogenize the UHF/EHF maps.
 
 #### Spectrum Estimators
 
