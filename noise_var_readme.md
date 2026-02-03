@@ -28,7 +28,7 @@ The hits maps are processed to nside=512 with 20 arcmin smoothing and normalized
 
 ### Efficiency Factors
 - **Non-PWV observation efficiency**: `nonpwv_obs_eff = 0.33`
-- **Detector yield**: `detector_yield = 0.7`
+- **Detector yield**: `detector_yield = 0.7` (only applicable for EHF346)
 
 ---
 
@@ -125,17 +125,19 @@ Where $\Omega_{\text{pix,deg}}$ is the pixel solid angle in square degrees.
 
 ### Deepest Pixel Noise (at relhits = 1.0)
 
+Values from validated noise simulations (N₀ fitted from BB power spectra):
+
 | Frequency | Baseline (μK-arcmin) | 2MF (μK-arcmin) | 2UHF (μK-arcmin) | Keep LF (μK-arcmin) |
 |-----------|----------------------|-----------------|------------------|---------------------|
-| f027      | ~30                  | —               | —                | ~15                 |
-| f039      | ~19                  | —               | —                | ~9                  |
-| f093      | ~1.1                 | ~1.6            | —                | —                   |
-| f145      | ~1.7                 | ~2.4            | —                | —                   |
-| f225      | ~4.0                 | —               | ~3.1             | —                   |
-| f280      | ~10                  | —               | ~8               | —                   |
-| f346      | ~29                  | —               | ~20              | —                   |
+| f027      | 25.3                 | —               | —                | 12.3                |
+| f039      | 15.7                 | —               | —                | 7.6                 |
+| f093      | 1.0                  | 1.3             | —                | —                   |
+| f145      | 1.4                  | 1.9             | —                | —                   |
+| f225      | 4.6                  | —               | 3.5             | —                   |
+| f280      | 11.8                 | —               | 9.1             | —                   |
+| f346      | 38.3                 | —               | 27.1            | —                   |
 
-*Note: Exact values depend on the hits map normalization and should be verified by running the notebook.*
+*Values from noise validation (fit_results.txt). These represent white noise levels N₀ fitted from high-ℓ BB power spectra (500 < ℓ < 1000).*
 
 ---
 

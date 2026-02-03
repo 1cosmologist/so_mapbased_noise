@@ -50,10 +50,10 @@ where:
 
 ### 1.2 Batch Generation: `run_generate_noise.py`
 
-Generates 50 Monte Carlo realizations for each channel specified in the YAML configuration:
+Generates 100 Monte Carlo realizations for each channel specified in the YAML configuration:
 
 ```python
-NSIMS = 50
+NSIMS = 100
 YAML_FILE = 'resources/instr_params_all_channels.yaml'
 NOISE_METHOD = 'variance_map'
 ```
@@ -124,7 +124,7 @@ For each channel, the zeroth realization (mc000) is visualized as I, Q, U mollvi
 
 ### 3.2 Power Spectrum Computation
 
-Four BB power spectrum estimates are computed for each channel, averaged over 50 realizations:
+Four BB power spectrum estimates are computed for each channel, averaged over 100 realizations:
 
 #### Masking Schemes
 
@@ -206,18 +206,18 @@ Example power spectrum plots comparing measured spectra with noise model:
 
 | Channel | N₀ (μK-arcmin) | ℓ_knee (cfg) | α (cfg) |
 |---------|----------------|--------------|---------|
-| LF027_2.00telyrs_lk30 | 30.20 | 30 | -2.4 |
-| LF027_8.50telyrs_lk30 | 14.65 | 30 | -2.4 |
-| LF039_2.00telyrs_lk30 | 18.70 | 30 | -2.4 |
-| LF039_8.50telyrs_lk30 | 9.07 | 30 | -2.4 |
-| MF093_20.66telyrs_lk50 | 1.52 | 50 | -2.5 |
-| MF093_36.66telyrs_lk50 | 1.14 | 50 | -2.5 |
-| MF145_20.66telyrs_lk50 | 2.24 | 50 | -3.0 |
-| MF145_36.66telyrs_lk50 | 1.68 | 50 | -3.0 |
-| HF225_10.00telyrs_lk70 | 5.51 | 70 | -3.0 |
-| HF225_17.00telyrs_lk70 | 4.23 | 70 | -3.0 |
-| HF280_10.00telyrs_lk100 | 14.12 | 100 | -3.0 |
-| HF280_17.00telyrs_lk100 | 10.83 | 100 | -3.0 |
+| LF027_2.00telyrs_lk30 | 25.27 | 30 | -2.4 |
+| LF027_8.50telyrs_lk30 | 12.26 | 30 | -2.4 |
+| LF039_2.00telyrs_lk30 | 15.65 | 30 | -2.4 |
+| LF039_8.50telyrs_lk30 | 7.59 | 30 | -2.4 |
+| MF093_20.66telyrs_lk50 | 1.27 | 50 | -2.5 |
+| MF093_36.66telyrs_lk50 | 0.96 | 50 | -2.5 |
+| MF145_20.66telyrs_lk50 | 1.87 | 50 | -3.0 |
+| MF145_36.66telyrs_lk50 | 1.41 | 50 | -3.0 |
+| HF225_10.00telyrs_lk70 | 4.61 | 70 | -3.0 |
+| HF225_17.00telyrs_lk70 | 3.54 | 70 | -3.0 |
+| HF280_10.00telyrs_lk100 | 11.82 | 100 | -3.0 |
+| HF280_17.00telyrs_lk100 | 9.06 | 100 | -3.0 |
 | HF346_7.00telyrs_lk50 | 38.30 | 50 | -3.0 |
 | HF346_14.00telyrs_lk50 | 27.08 | 50 | -3.0 |
 | HF346_7.00telyrs_lk200 | 38.76 | 200 | -3.0 |
