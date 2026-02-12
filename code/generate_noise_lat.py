@@ -2,7 +2,6 @@ import numpy as np
 import healpy as hp
 import yaml
 import os
-import glob
 
 ss = np.random.SeedSequence(1234567890123)
 
