@@ -1,0 +1,68 @@
+# Simons Observatory LAT parameters for variance_map noise generation
+# All unique channel configurations across different telescope schedules
+
+# LF 27 GHz
+LF027_10.00telyrs_lk700:
+  central_freq_GHz: 27.
+  beam_fwhm_arcmin: 7.4
+  ell_knee_i: 500
+  alpha_knee_i: -3.5
+  ell_knee_p: 700
+  alpha_knee_p: -1.4
+  nside: 2048
+  tel_yrs: 10.00
+
+# LF 39 GHz
+LF039_10.00telyrs_lk700:
+  central_freq_GHz: 39.
+  beam_fwhm_arcmin: 5.1
+  ell_knee_i: 500
+  alpha_knee_i: -3.5
+  ell_knee_p: 700
+  alpha_knee_p: -1.4
+  nside: 2048
+  tel_yrs: 10.00
+
+# MF 93 GHz
+MF093_84.00telyrs_lk700:
+  central_freq_GHz: 93.
+  beam_fwhm_arcmin: 2.2
+  ell_knee_i: 2100
+  alpha_knee_i: -3.5
+  ell_knee_p: 700
+  alpha_knee_p: -1.4
+  nside: 2048
+  tel_yrs: 84.00
+
+# MF 145 GHz
+MF145_84.00telyrs_lk700:
+  central_freq_GHz: 145.
+  beam_fwhm_arcmin: 1.4
+  ell_knee_i: 3000
+  alpha_knee_i: -3.5
+  ell_knee_p: 700
+  alpha_knee_p: -1.4
+  nside: 2048
+  tel_yrs: 84.00
+
+# HF 225 GHz
+HF225_42.00telyrs_lk700:
+  central_freq_GHz: 225.
+  beam_fwhm_arcmin: 1.0
+  ell_knee_i: 3800
+  alpha_knee_i: -3.5
+  ell_knee_p: 700
+  alpha_knee_p: -1.4
+  nside: 2048
+  tel_yrs: 42.00
+
+# HF 280 GHz
+HF280_42.00telyrs_lk700:
+  central_freq_GHz: 280.
+  beam_fwhm_arcmin: 0.9
+  ell_knee_i: 3800
+  alpha_knee_i: -3.5
+  ell_knee_p: 700
+  alpha_knee_p: -1.4
+  nside: 2048
+  tel_yrs: 42.00

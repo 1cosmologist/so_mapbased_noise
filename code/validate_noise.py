@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 # Configuration
 NSIMS_FOR_AVG = 5
-YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_baseline_pessimistic.yaml'
+YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_baselineEHF_pessimistic.yaml'
 BASE_OUTPUT_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/output'
 RELHITS_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_relhits_C_nside512.fits'
 FULL_BINARY_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_full-binary_C_nside512.fits'

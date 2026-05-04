@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.fits
+resources/*.fits
+code/__pycache__/
+._dbindex_
+code/20251109_ehf_forecasting.ipynb
+output
