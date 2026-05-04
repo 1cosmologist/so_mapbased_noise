@@ -13,7 +13,8 @@ from generate_noise_lat import SimonsObservatoryNoise
 # Configuration
 NSIMS = 10
 NSPLITS = None
-YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_lat_channels.yaml'
+YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_lat-wide_channels.yaml'
+# YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_lat-delens_channels.yaml'
 BASE_OUTPUT_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/output'
 
 # Noise generation method: 'harmonic' or 'variance_map'
@@ -22,8 +23,13 @@ SURVEY = 'wide'  # Only used for variance_map method to determine which variance
 
 # Directory containing variance maps (used if NOISE_METHOD='variance_map')
 VARIANCE_MAP_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/variance_maps'
-sohits_file = '/pscratch/sd/s/shamikg/so_lat_mapbased_noise/resources/so_mf_relhits_2048.fits'
-sofoot_file = '/pscratch/sd/s/shamikg/so_lat_mapbased_noise/resources/so_common_lf_mf_uhf_bin_2048.fits'
+
+if SURVEY == 'wide':
+    sohits_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_lat_mf_relhits_2048.fits'
+    sofoot_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_common_lf_mf_uhf_bin_2048.fits'
+if SURVEY == 'delens_wide':
+    sohits_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_lat_delens_wide_mf_relhits_2048.fits'
+    sofoot_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_lat_delens_wide_common_lf_mf_uhf_bin_2048.fits'
 
 
 def get_output_folder(yaml_path, base_output_dir):

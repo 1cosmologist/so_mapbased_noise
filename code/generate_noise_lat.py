@@ -32,8 +32,8 @@ nfreqs_tot = 25 #len(so_channels)  # Budget for 25 frequency channels
 _child_ss = ss.spawn(nfreqs_tot)
 child_seeds = [cs.generate_state(1)[0] for cs in _child_ss]
 
-sohits_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_relhits_C_nside512.fits'
-sofoot_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_full-binary_C_nside512.fits'
+# sohits_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_relhits_C_nside512.fits'
+# sofoot_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_full-binary_C_nside512.fits'
 
 def uKarcmin2Nl(uKarcmin):
     return (uKarcmin * np.deg2rad(1./60.))**2
@@ -68,8 +68,8 @@ def find_variance_map(channel, tel_yrs=None, variance_map_dir=None, survey='wide
     
     # Look for exact match with specified tel-yrs
     if survey == 'wide': filename = f"so_lat_wide_1_el_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
-    if survey == 'delens-wide': filename = f"so_lat_delens-wide_1_el_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
-    if survey == 'delens-bk': filename = f"so_lat_delens-bk_1_el_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
+    if survey == 'delens_wide': filename = f"so_lat_delens_wide_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
+    if survey == 'delens_bk': filename = f"so_lat_delens_bk_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
     
     filepath = os.path.join(variance_map_dir, filename)
     if os.path.exists(filepath):
@@ -210,9 +210,9 @@ class SimonsObservatoryNoise:
 
         if self.survey == 'wide':
             stream_idx = so_channels.index(channel[:5])
-        elif self.survey == 'delens-wide':
+        elif self.survey == 'delens_wide':
             stream_idx = so_channels.index(channel[:5]) + len(so_channels)
-        elif self.survey == 'delens-bk':
+        elif self.survey == 'delens_bk':
             stream_idx = so_channels.index(channel[:5]) + 2*len(so_channels)
             
         self.rng = np.random.default_rng(child_seeds[stream_idx])

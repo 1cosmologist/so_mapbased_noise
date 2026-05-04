@@ -41,7 +41,7 @@ sofoot_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_full-bi
 def uKarcmin2Nl(uKarcmin):
     return (uKarcmin * np.deg2rad(1./60.))**2
 
-def find_variance_map(channel, tel_yrs=None, variance_map_dir=None):
+def find_variance_map(channel, tel_yrs=None, variance_map_dir=None, fake=False):
     """
     Find variance map file for a given channel.
     
@@ -56,7 +56,9 @@ def find_variance_map(channel, tel_yrs=None, variance_map_dir=None):
         If None, returns the first available variance map for the channel.
     variance_map_dir : str, optional
         Directory to search for variance maps
-        
+    fake : bool, optional
+        If True, look for fake variance maps (default: False)
+
     Returns
     -------
     str or None
@@ -71,7 +73,10 @@ def find_variance_map(channel, tel_yrs=None, variance_map_dir=None):
     
     if tel_yrs is not None:
         # Look for exact match with specified tel-yrs
-        filename = f"so_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
+        if fake:
+            filename = f"s4like_so_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
+        else:
+            filename = f"so_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
         filepath = os.path.join(variance_map_dir, filename)
         if os.path.exists(filepath):
             return filepath
@@ -137,7 +142,7 @@ class SimonsObservatoryNoise:
     variance_map_dir : str, optional
         Directory to search for variance maps (used if variance_map_path is None)
     """
-    def __init__(self, channel, params=None, noise_method='harmonic', 
+    def __init__(self, channel, params=None, noise_method='harmonic', fake=False,
                  so_hits=None, so_foot=None,
                  variance_map_path=None, variance_map_dir=None) -> None:
         self.channel = channel
@@ -193,7 +198,7 @@ class SimonsObservatoryNoise:
             if variance_map_path is not None:
                 self.variance_map_path = variance_map_path
             else:
-                self.variance_map_path = find_variance_map(channel[:5], tel_yrs=self.tel_yrs, variance_map_dir=variance_map_dir)
+                self.variance_map_path = find_variance_map(channel[:5], tel_yrs=self.tel_yrs, variance_map_dir=variance_map_dir, fake=fake)
             
             if self.variance_map_path is None:
                 tel_yrs_msg = f" with tel_yrs={self.tel_yrs:.2f}" if self.tel_yrs is not None else ""
