@@ -2,6 +2,53 @@
 
 This document describes the methodology for creating polarized noise variance maps for the Simons Observatory (SO) Large Aperture Telescope (LAT) for both the **wide** and **delensing** scan strategies.
 
+## Code Reference
+
+**Repository:** [https://github.com/1cosmologist/so_mapbased_noise](https://github.com/1cosmologist/so_mapbased_noise)  
+**Branch:** [`noise_from_NET`](https://github.com/1cosmologist/so_mapbased_noise/tree/noise_from_NET)
+
+### Notebooks
+
+| Notebook | Survey | Description |
+|----------|--------|-------------|
+| [`code/var_maps_from_NET_LAT.ipynb`](code/var_maps_from_NET_LAT.ipynb) | Wide (`lat_wide_1_el`) | Generates relative hits maps, binary footprints, and noise variance maps for the main wide-area survey |
+| [`code/var_maps_from_NET_LAT_deep.ipynb`](code/var_maps_from_NET_LAT_deep.ipynb) | Delensing (`lat_delens_wide`) | Same pipeline applied to the delensing scan strategy; also derives the deep-field analysis mask |
+
+### Key Functions
+
+#### `varpix2uKarcmin(var_map)` — defined in each notebook
+
+Converts a per-pixel noise variance map (μK²) to polarization map depth (μK-arcmin):
+
+```python
+def varpix2uKarcmin(var_map):
+    nside_in = hp.get_nside(var_map)
+    pixarea_deg = hp.nside2pixarea(nside_in, degrees=True)
+    return 60. * np.sqrt(var_map * pixarea_deg)
+```
+
+#### External library functions used
+
+| Function | Library | Purpose |
+|----------|---------|---------|
+| `hp.read_map()` | `healpy` | Read HEALPix hits maps from FITS files |
+| `hp.ud_grade(..., power=-2)` | `healpy` | Upgrade/degrade map resolution (power=-2 for hit counts) |
+| `hp.write_map()` | `healpy` | Write output variance and ancillary maps to FITS |
+| `hp.get_nside()` | `healpy` | Retrieve HEALPix resolution parameter |
+| `hp.nside2pixarea()` | `healpy` | Compute pixel solid angle |
+| `hp.mollview()` / `hp.graticule()` | `healpy` | Mollweide projection visualization |
+| `st.mask_udgrade()` | `skytools` | Upgrade binary mask maps preserving sharp boundaries |
+
+### Computation Steps (per notebook)
+
+1. Load hits maps for each frequency band (LF / MF / UHF) from the `deSO` unscaled simulation set
+2. Upgrade to nside=2048 with `hp.ud_grade(..., power=-2)`
+3. Clip negative hits to zero; normalize to relative hits in [0, 1]
+4. Derive binary footprint masks (pixels with any hits above minimum)
+5. Compute total observation time per pixel using the telescope deployment schedule
+6. Apply the variance formula: $\sigma^2_\text{pix} = (\sqrt{2}\cdot\text{NET})^2 / (t_\text{obs,pix} \cdot \eta_\text{obs})$
+7. Save variance maps and ancillary hits / binary mask products
+
 ## Overview
 
 The noise variance maps are generated from telescope observation schedules, instrument NET (Noise Equivalent Temperature), and relative hits maps from simulated scan strategies. These maps provide spatially-varying noise estimates for polarization (Q/U) measurements.

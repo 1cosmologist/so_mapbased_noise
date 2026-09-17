@@ -15,6 +15,10 @@ DEFAULT_PARAMS = {
     'HF225': {'central_freq_GHz': 225., 'beam_fwhm_arcmin': 11., 'noise_uK_arcmin': 5.9, 'ell_knee': 70, 'alpha_knee': -3., 'nside': 512},
     'HF280': {'central_freq_GHz': 280., 'beam_fwhm_arcmin': 9., 'noise_uK_arcmin': 15., 'ell_knee': 100, 'alpha_knee': -3., 'nside': 512},
     'HF346': {'central_freq_GHz': 346., 'beam_fwhm_arcmin': 8., 'noise_uK_arcmin': 109., 'ell_knee': 200, 'alpha_knee': -3., 'nside': 512},
+    'MF138': {'central_freq_GHz': 138., 'beam_fwhm_arcmin': 17., 'noise_uK_arcmin': 2.9, 'ell_knee': 50, 'alpha_knee': -3., 'nside': 512},
+    'MF152': {'central_freq_GHz': 152., 'beam_fwhm_arcmin': 17., 'noise_uK_arcmin': 2.9, 'ell_knee': 50, 'alpha_knee': -3., 'nside': 512},
+    'HF214': {'central_freq_GHz': 214., 'beam_fwhm_arcmin': 11., 'noise_uK_arcmin': 8.3, 'ell_knee': 70, 'alpha_knee': -3., 'nside': 512},
+    'HF236': {'central_freq_GHz': 236., 'beam_fwhm_arcmin': 11., 'noise_uK_arcmin': 8.3, 'ell_knee': 70, 'alpha_knee': -3., 'nside': 512},
 }
 
 # Channel name to frequency mapping for variance map file lookup
@@ -22,6 +26,8 @@ CHANNEL_FREQ_MAP = {
     'LF027': 'f027', 'LF039': 'f039',
     'MF093': 'f093', 'MF145': 'f145',
     'HF225': 'f225', 'HF280': 'f280', 'HF346': 'f346',
+    'MF138': 'f138', 'MF152': 'f152', 
+    'HF214': 'f214', 'HF236': 'f236',
 }
 
 # Default variance maps directory
@@ -76,8 +82,10 @@ def find_variance_map(channel, tel_yrs=None, variance_map_dir=None, fake=False):
         if fake:
             filename = f"s4like_so_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
         else:
-            filename = f"so_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
+            filename = f"so_sat_{freq_code}_noise_var_{tel_yrs:.2f}tel-yrs.fits"
         filepath = os.path.join(variance_map_dir, filename)
+        
+        print(filepath)
         if os.path.exists(filepath):
             return filepath
         else:

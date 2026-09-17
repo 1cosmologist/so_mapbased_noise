@@ -36,42 +36,74 @@ LF039_8.50telyrs_lk30:
   tel_yrs: 8.50
 
 # MF 93 GHz
-MF093_20.66telyrs_lk50:
+MF093_21.33telyrs_lk50:
   central_freq_GHz: 93.
   beam_fwhm_arcmin: 30.
   ell_knee: 50
   alpha_knee: -2.5
   nside: 512
-  tel_yrs: 20.66
+  tel_yrs: 21.33
 
-MF093_36.66telyrs_lk50:
+MF093_37.33telyrs_lk50:
   central_freq_GHz: 93.
   beam_fwhm_arcmin: 30.
   ell_knee: 50
   alpha_knee: -2.5
   nside: 512
-  tel_yrs: 36.66
+  tel_yrs: 37.33
 
 # MF 145 GHz
-MF145_20.66telyrs_lk50:
+MF145_21.33telyrs_lk50:
   central_freq_GHz: 145.
   beam_fwhm_arcmin: 17.
   ell_knee: 50
   alpha_knee: -3.
   nside: 512
-  tel_yrs: 20.66
+  tel_yrs: 21.33
 
-MF145_36.66telyrs_lk50:
+MF138_37.33telyrs_lk50:
+  central_freq_GHz: 138.
+  beam_fwhm_arcmin: 17.
+  ell_knee: 50
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 37.33
+
+MF145_37.33telyrs_lk50:
   central_freq_GHz: 145.
   beam_fwhm_arcmin: 17.
   ell_knee: 50
   alpha_knee: -3.
   nside: 512
-  tel_yrs: 36.66
+  tel_yrs: 37.33
+
+MF152_37.33telyrs_lk50:
+  central_freq_GHz: 152.
+  beam_fwhm_arcmin: 17.
+  ell_knee: 50
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 37.33
 
 # HF 225 GHz
+HF214_10.00telyrs_lk70:
+  central_freq_GHz: 214.
+  beam_fwhm_arcmin: 11.
+  ell_knee: 70
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 10.00
+
 HF225_10.00telyrs_lk70:
   central_freq_GHz: 225.
+  beam_fwhm_arcmin: 11.
+  ell_knee: 70
+  alpha_knee: -3.
+  nside: 512
+  tel_yrs: 10.00
+
+HF236_10.00telyrs_lk70:
+  central_freq_GHz: 236.
   beam_fwhm_arcmin: 11.
   ell_knee: 70
   alpha_knee: -3.

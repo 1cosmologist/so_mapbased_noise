@@ -27,10 +27,14 @@ DEFAULT_VARIANCE_MAP_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/v
 so_channels = list(DEFAULT_PARAMS.keys())
 
 nfreqs_tot = 25 #len(so_channels)  # Budget for 25 frequency channels
-# Generate deterministic integer seeds from the SeedSequence for each channel
-# This ensures reproducibility and avoids SeedSequence state consumption issues
+# One SeedSequence per channel/survey stream; per-sim_idx children are derived on demand
 _child_ss = ss.spawn(nfreqs_tot)
-child_seeds = [cs.generate_state(1)[0] for cs in _child_ss]
+
+def _mc_rng(stream_idx, sim_idx):
+    """Deterministic RNG for (stream_idx, sim_idx), independent of call order or process."""
+    parent = _child_ss[stream_idx]
+    mc_ss = np.random.SeedSequence(entropy=parent.entropy, spawn_key=parent.spawn_key + (sim_idx,), pool_size=parent.pool_size)
+    return np.random.default_rng(mc_ss)
 
 # sohits_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_relhits_C_nside512.fits'
 # sofoot_file = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/so_sat_full-binary_C_nside512.fits'
@@ -209,15 +213,20 @@ class SimonsObservatoryNoise:
             print(f"  Loaded variance map: {self.variance_map_path}")
 
         if self.survey == 'wide':
-            stream_idx = so_channels.index(channel[:5])
+            self.stream_idx = so_channels.index(channel[:5])
         elif self.survey == 'delens_wide':
-            stream_idx = so_channels.index(channel[:5]) + len(so_channels)
+            self.stream_idx = so_channels.index(channel[:5]) + len(so_channels)
         elif self.survey == 'delens_bk':
-            stream_idx = so_channels.index(channel[:5]) + 2*len(so_channels)
-            
-        self.rng = np.random.default_rng(child_seeds[stream_idx])
+            self.stream_idx = so_channels.index(channel[:5]) + 2*len(so_channels)
 
-    def get_noise(self, nside_out=None):
+        # Default realization; overridden per-call whenever get_noise(sim_idx=...) is used
+        self.rng = _mc_rng(self.stream_idx, 0)
+
+    def set_realization(self, sim_idx):
+        """Reseed the RNG to the unique, reproducible stream for this MC realization index."""
+        self.rng = _mc_rng(self.stream_idx, sim_idx)
+
+    def get_noise(self, sim_idx=None, nside_out=None):
         """
         Generate a noise realization.
         
@@ -228,6 +237,9 @@ class SimonsObservatoryNoise:
         
         Parameters
         ----------
+        sim_idx : int, optional
+            Monte Carlo realization index. If given, the RNG is reseeded to the unique,
+            reproducible stream for this index (independent of call order or process/rank).
         nside_out : int, optional
             Output nside (not currently used, reserved for future)
             
@@ -236,6 +248,9 @@ class SimonsObservatoryNoise:
         noise_IQU : ndarray
             Shape (3, npix) noise map in I, Q, U
         """
+        if sim_idx is not None:
+            self.set_realization(sim_idx)
+
         if self.noise_method == 'harmonic':
             return self._get_noise_harmonic()
         elif self.noise_method == 'variance_map':

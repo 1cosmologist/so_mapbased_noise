@@ -13,12 +13,12 @@ from generate_noise import SimonsObservatoryNoise
 # Configuration
 NSIMS = 100
 NSPLITS = None
-YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_fake_channels.yaml'
+YAML_FILE = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/instr_params_all_channels.yaml'
 BASE_OUTPUT_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/output'
 
 # Noise generation method: 'harmonic' or 'variance_map'
 NOISE_METHOD = 'variance_map'
-fake = True  # Set to True if using fake channels with fake variance maps
+fake = False  # Set to True if using fake channels with fake variance maps
 
 # Directory containing variance maps (used if NOISE_METHOD='variance_map')
 VARIANCE_MAP_DIR = '/pscratch/sd/s/shamikg/so_mapbased_noise/resources/variance_maps'
